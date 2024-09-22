@@ -90,7 +90,7 @@ def find_optimal_min_support(dataset):
 
 # Main function
 def main():
-    file_path = "E:\\4-2 term\\DM Lab\\Lab 2\\archive\\groceries.csv"  # Dataset path
+    file_path = "archive/groceries.csv"  # Dataset path
 
     # Step 1: Load dataset from CSV file
     dataset = load_dataset(file_path)
