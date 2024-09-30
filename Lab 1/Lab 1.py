@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 # Load the dataset from your path
-file_path = r"E:\4-2 term\DM Lab\archive\Groceries_dataset.csv"
+file_path = r"archive\Groceries_dataset.csv"
 df = pd.read_csv(file_path)
 
 # ------------------------

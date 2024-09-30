@@ -102,8 +102,64 @@ min_support = 4
 # Run the Apriori algorithm
 frequent_itemsets = apriori_algorithm(dataset, min_support)
 
+<<<<<<< HEAD
 # Print all frequent itemsets
 #print("\nAll frequent itemsets with min_support = {}:".format(min_support))
 for idx, (itemset, support) in enumerate(frequent_itemsets.items(), start=1):
     itemset_str = ', '.join(itemset)
     #print(f"Item {idx}: {itemset_str}, Support: {support}")
+=======
+        if 5 <= total_patterns <= 20:  # Define acceptable range for "optimal"
+            current_diff = abs(10 - total_patterns)  # Aim for 10 frequent patterns
+            if current_diff < min_difference:
+                min_difference = current_diff
+                optimal_support = min_support
+                optimal_patterns = frequent_itemsets
+
+    return optimal_support, optimal_patterns
+
+# Main function
+def main():
+    file_path = "archive/groceries.csv"  # Dataset path
+
+    # Step 1: Load dataset from CSV file
+    dataset = load_dataset(file_path)
+
+    # Step 2: Apply Apriori algorithm
+    min_support = 2
+    frequent_itemsets = apriori(dataset, min_support)
+
+    # Step 3: Display frequent itemsets
+    for idx, k_itemset in enumerate(frequent_itemsets, start=1):
+        print(f"Frequent {idx}-itemsets:")
+        for itemset, support in k_itemset.items():
+            print(f"Itemset: {set(itemset)}, Support: {support}")
+
+    # Step 4: Find closed and maximal itemsets
+    all_itemsets = []
+    for k_itemset in frequent_itemsets:
+        all_itemsets.extend(list(k_itemset.keys()))
+
+    itemset_support = count_support(dataset, all_itemsets)
+    closed_itemsets = find_closed_itemsets(all_itemsets, itemset_support)
+    maximal_itemsets = find_maximal_itemsets(all_itemsets)
+
+    print("\nClosed Itemsets:")
+    for itemset in closed_itemsets:
+        print(set(itemset))
+
+    print("\nMaximal Itemsets:")
+    for itemset in maximal_itemsets:
+        print(set(itemset))
+
+    # Step 5: Find the optimal min_support
+    optimal_support, optimal_patterns = find_optimal_min_support(dataset)
+    print(f"\nOptimal Min Support: {optimal_support}")
+    for idx, k_itemset in enumerate(optimal_patterns, start=1):
+        print(f"Frequent {idx}-itemsets:")
+        for itemset, support in k_itemset.items():
+            print(f"Itemset: {set(itemset)}, Support: {support}")
+
+if __name__ == "__main__":
+    main()
+>>>>>>> 85170c152af9ae33e6032d902b829e67920e4f9d
