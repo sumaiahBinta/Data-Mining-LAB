@@ -1,6 +1,6 @@
-import pandas as pd
 from collections import defaultdict
 from itertools import combinations
+import matplotlib.pyplot as plt
 
 # Load the dataset
 def load_dataset(file_path):
@@ -74,7 +74,10 @@ def apriori_algorithm(dataset, min_support):
 
     # Generate L1
     L1 = generate_L1(item_support, min_support)
-    print(f"L1 (Frequent 1-itemsets): {L1}\n")
+    print("L1 (Frequent 1-itemsets):")
+    for itemset, support in L1.items():
+        print(f"Itemset: {', '.join(list(itemset))}, Support: {support}")
+    print()
 
     all_frequent_itemsets = dict(L1)
 
@@ -86,24 +89,51 @@ def apriori_algorithm(dataset, min_support):
         candidates = prune_candidates(candidates, Lk.keys())
         support_count = count_support(dataset, candidates)
         Lk = generate_Lk(candidates, support_count, min_support)
+        if Lk:
+            print(f"L{k} (Frequent {k}-itemsets):")
+            for itemset, support in Lk.items():
+                print(f"Itemset: {', '.join(list(itemset))}, Support: {support}")
+            print()
         all_frequent_itemsets.update(Lk)
-        print(f"L{k} (Frequent {k}-itemsets): {Lk}\n")
         k += 1
 
     return all_frequent_itemsets
 
+# Run Apriori algorithm for different min_support values
+def run_apriori_for_min_supports(dataset, min_support_range):
+    support_results = []
+
+    for min_support in min_support_range:
+        print(f"\nRunning Apriori with min_support = {min_support}")
+        frequent_itemsets = apriori_algorithm(dataset, min_support)
+        num_itemsets = len(frequent_itemsets)
+        support_results.append((min_support, num_itemsets))
+
+    return support_results
+
+# Visualize the effect of varying minimum support
+def plot_support_vs_itemsets(support_results):
+    min_supports, itemset_counts = zip(*support_results)
+    plt.figure(figsize=(10, 6))
+    plt.plot(min_supports, itemset_counts, marker='o')
+    plt.title('Number of Frequent Itemsets vs Min Support')
+    plt.xlabel('Min Support')
+    plt.ylabel('Number of Frequent Itemsets')
+    plt.grid(True)
+    plt.show()
+
 # File path to your CSV dataset
 file_path = r"archive/groceries_dataset.csv"
+
+# Ensure the dataset is loaded
 dataset = load_dataset(file_path)
+#print(f"Sample dataset: {dataset[:5]}")  # Printing first 5 rows for verification
 
-# Minimum support
-min_support = 10
+# Define a range of minimum support values (adjust as needed)
+min_support_range = range(1, 30, 2)
 
-# Run the Apriori algorithm
-frequent_itemsets = apriori_algorithm(dataset, min_support)
+# Run Apriori algorithm for different min_support values
+support_results = run_apriori_for_min_supports(dataset, min_support_range)
 
-# Print all frequent itemsets
-#print("\nAll frequent itemsets with min_support = {}:".format(min_support))
-for idx, (itemset, support) in enumerate(frequent_itemsets.items(), start=1):
-    itemset_str = ', '.join(itemset)
-    #Sprint(f"Item {idx}: {itemset_str}, Support: {support}")
+# Plot the results
+plot_support_vs_itemsets(support_results)
